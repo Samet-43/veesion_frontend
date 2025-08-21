@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Pages
-import Home from "./pages/Home/Home";
-import Service from "./pages/Service/Service";
-import Portfolio from "./pages/Portfolio/Portfolio";
-import PortfolioDetail from "./pages/PortfolioDetail/PortfolioDetail";
-import Merch from "./pages/Merch/Merch";
-import MerchDetail from "./pages/MerchDetail/MerchDetail";
-import Menu from "./pages/Menu/Menu.tsx";
+import Home from "./pages/home/Home";
+import Service from "./pages/service/Service";
+import Portfolio from "./pages/portfolio/Portfolio";
+import PortfolioDetail from "./pages/portfolioDetail/PortfolioDetail";
+import Merch from "./pages/merch/Merch";
+import MerchDetail from "./pages/merchDetail/MerchDetail";
+import Menu from "./pages/menu/Menu.tsx";
 
 function App() {
     return (
