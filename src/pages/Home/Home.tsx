@@ -9,14 +9,14 @@ function Home() {
             <div className="relative h-screen w-screen overflow-hidden">
                 {/* Fond flouté */}
                 <img
-                    src="/cottonBro.jpg"
+                    src="/Home/cottonBro.jpg"
                     alt=""
                     className="object-cover blur-[7px] h-full w-full"
                 />
 
                 {/* Cercle net */}
                 <img
-                    src="/cottonBro.jpg"
+                    src="/Home/cottonBro.jpg"
                     alt=""
                     className="absolute inset-0 h-full w-full object-cover blur-[1px]"
                     style={{ clipPath: `circle(${SPOT_R}px at ${SPOT_X} ${SPOT_Y})` }}
@@ -36,7 +36,7 @@ function Home() {
 
                 {/* Logo en bas à droite */}
                 <div className="absolute bottom-6 right-6 w-20 h-20 md:w-28 md:h-28">
-                    <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+                    <img src="/Home/logo.png" alt="Logo" className="w-full h-full object-contain" />
                 </div>
 
                 {/* NAVBAR responsive */}
@@ -52,7 +52,7 @@ function Home() {
                         {/* Logo texte centré */}
                         <div className="absolute left-1/2 -translate-x-1/2 select-none pointer-events-none">
                             <img
-                                src="/logo-texte-rouge.png"
+                                src="/Home/logo-texte-rouge.png"
                                 alt="veeesion"
                                 className="h-8 md:h-10 object-contain"
                             />
@@ -66,7 +66,7 @@ function Home() {
 
                         >
                             <img
-                                src="/burger.png"
+                                src="/Home/burger.png"
                                 alt="Ouvrir le menu"
                                 className="w-full h-full object-contain"
                             />

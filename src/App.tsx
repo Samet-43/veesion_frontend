@@ -7,7 +7,7 @@ import Portfolio from "./pages/Portfolio/Portfolio";
 import PortfolioDetail from "./pages/PortfolioDetail/PortfolioDetail";
 import Merch from "./pages/Merch/Merch";
 import MerchDetail from "./pages/MerchDetail/MerchDetail";
-import MenuFullScreen from "./pages/MenuFullScreen/MenuFullScreen";
+import Menu from "./pages/Menu/Menu.tsx";
 
 function App() {
     return (
@@ -19,7 +19,7 @@ function App() {
                 <Route path="/portfolio/:id" element={<PortfolioDetail />} />
                 <Route path="/merch" element={<Merch />} />
                 <Route path="/merch/:id" element={<MerchDetail />} />
-                <Route path="/menu" element={<MenuFullScreen />} />
+                <Route path="/menu" element={<Menu />} />
             </Routes>
         </BrowserRouter>
     );
