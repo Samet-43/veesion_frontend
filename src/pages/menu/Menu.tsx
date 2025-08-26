@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Menu = () => {
     return (
         <>
@@ -21,18 +23,18 @@ const Menu = () => {
 
                 {/* Navigation gauche */}
                 <nav className="absolute left-28 top-52 flex flex-col gap-12">
-                    <a href="/" className="text-white text-6xl font-normal leading-none hover:opacity-80">
+                    <Link to="/" className="text-white text-6xl font-normal leading-none hover:opacity-80">
                         Accueil
-                    </a>
-                    <a href="/services" className="text-white text-6xl font-normal leading-none hover:opacity-80">
+                    </Link>
+                    <Link to="/services" className="text-white text-6xl font-normal leading-none hover:opacity-80">
                         Service
-                    </a>
-                    <a href="/portfolio" className="text-white text-6xl font-normal leading-none hover:opacity-80">
+                    </Link>
+                    <Link to="/portfolio" className="text-white text-6xl font-normal leading-none hover:opacity-80">
                         Portfolio
-                    </a>
-                    <a href="/merch" className="text-white text-6xl font-normal leading-none hover:opacity-80">
+                    </Link>
+                    <Link to="/merch" className="text-white text-6xl font-normal leading-none hover:opacity-80">
                         Merch
-                    </a>
+                    </Link>
                 </nav>
 
                 {/* Image */}
@@ -59,9 +61,7 @@ const Menu = () => {
                         <p>hi@veesion.com</p>
                         <p>+32468123456</p>
                     </div>
-
                 </div>
-
             </div>
         </>
     );
