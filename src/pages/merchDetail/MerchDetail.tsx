@@ -137,10 +137,10 @@ function MerchDetail() {
 
     const onCrossClick = useCallback(
         (which: "c1" | "c2") => {
-            if (centerThumbId !== 1) return; // actif uniquement si productCard-1 est au centre
+            if (n !== 1 || centerThumbId !== 1) return;
             setActiveDetail((prev) => (prev === which ? null : which));
         },
-        [centerThumbId]
+        [n, centerThumbId]
     );
 
     // Fermer au clic extérieur
@@ -200,8 +200,8 @@ function MerchDetail() {
                             >
                                 <img src="/merch/panier.png" alt="Panier" />
                                 <span className="absolute -top-1 -right-1 bg-[#65130E] text-white text-xs font-bold rounded-full px-1.5 py-0.5">
-                  2
-                </span>
+                                  2
+                                </span>
                             </button>
 
                             {/* Burger */}
@@ -291,7 +291,7 @@ function MerchDetail() {
                          rotate-[21deg] z-0 opacity-100"
                         />
 
-                        {centerThumbId === 1 && (
+                        {n === 1 && centerThumbId === 1 && (
                             <>
                                 {/* Croix 1 */}
                                 <button
@@ -318,6 +318,7 @@ function MerchDetail() {
                                 </button>
                             </>
                         )}
+
 
                         {/* Colonne images (200 × 800) */}
                         <div
