@@ -42,41 +42,35 @@ function Home() {
                     <img src="/home/logo.png" alt="Logo" className="w-full h-full object-contain" />
                 </div>
 
-                {/* NAVBAR responsive */}
-                <header className="absolute z-20 left-[5%] top-8 w-[90%] h-16 md:h-[4.25rem]">
-                    <div className="relative h-full w-full flex items-center justify-between">
-                        {/* Liens (gauche) */}
-                        <nav className="flex gap-6 md:gap-10 text-base md:text-2xl font-bold">
-                            <Link to="/services" className="text-[#2C0D0F] hover:opacity-80 cursor-pointer">Service</Link>
-                            <Link to="/portfolio" className="text-[#2C0D0F] hover:opacity-80 cursor-pointer">Portfolio</Link>
-                            <Link to="/merch" className="text-[#2C0D0F] hover:opacity-80 cursor-pointer">Merch</Link>
+                <header className="absolute z-20 left-[5%] top-8 w-[90%]">
+                    <div className="grid grid-cols-[1fr_auto_1fr] items-center">
+                        <nav className="flex items-center gap-6 md:gap-10 text-base md:text-2xl font-bold">
+                            <Link to="/services" className="text-[#2C0D0F] hover:opacity-80">Service</Link>
+                            <Link to="/portfolio" className="text-[#2C0D0F] hover:opacity-80">Portfolio</Link>
+                            <Link to="/merch" className="text-[#2C0D0F] hover:opacity-80">Merch</Link>
                         </nav>
 
-                        {/* Logo texte centré → Home */}
-                        <Link
-                            to="/"
-                            aria-label="Accueil"
-                            className="absolute left-1/2 -translate-x-1/2 select-none"
-                        >
+                        <Link to="/" aria-label="Accueil" className="justify-self-center select-none">
                             <img
                                 src="/home/logo-texte-rouge.png"
                                 alt="veeesion"
-                                className="h-8 md:h-10 object-contain"
+                                className="h-8 md:h-10 object-contain block"
                             />
                         </Link>
 
-                        {/* Burger (droite) */}
-                        <Link
-                            to="/menu"
-                            aria-label="Menu"
-                            className="flex items-center justify-center md:w-[4.25rem] md:h-[4.25rem] w-[3.125rem] h-[3.125rem] cursor-pointer"
-                        >
-                            <img
-                                src="/home/burger.png"
-                                alt="Ouvrir le menu"
-                                className="w-full h-full object-contain"
-                            />
-                        </Link>
+                        <div className="justify-self-end">
+                            <Link
+                                to="/menu"
+                                aria-label="Menu"
+                                className="flex items-center justify-center h-10 w-10 md:h-[4.25rem] md:w-[4.25rem] hover:opacity-80"
+                            >
+                                <img
+                                    src="/home/burger.png"
+                                    alt="Ouvrir le menu"
+                                    className="h-full w-full object-contain block"
+                                />
+                            </Link>
+                        </div>
                     </div>
                 </header>
 
