@@ -5,7 +5,7 @@ function Merch() {
     // 1) Déclare la liste des articles une seule fois
     const items = useMemo(
         () => [
-            { id: 1, src: "/merch/productCard-1.png", title: "Coltath HMS" },
+            { id: 1, src: "/merch/productCard-1.png", title: "Coliath HMS" },
             { id: 2, src: "/merch/productCard-2.png", title: "Portefeuille en cuir" },
             { id: 3, src: "/merch/productCard-3.png", title: "Veste en cuir" },
             { id: 4, src: "/merch/productCard-4.png", title: "Sac de frappe" },
