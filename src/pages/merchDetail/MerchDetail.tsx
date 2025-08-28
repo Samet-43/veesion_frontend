@@ -16,58 +16,33 @@ function MerchDetail() {
     const products = useMemo(
         () => [
             {
-                id: 1,
-                title: "Coliath HMS",
-                price: "13,99 €",
-                p1:
-                    "Notre équipe de grimpeurs a conçu ce mousqueton pour relier un système d’assurage au harnais en escalade et à l’alpinisme.",
-                p2:
-                    "En plus de sa fermeture automatique, ce mousqueton a une forme HMS (en poire) pour bénéficier d’avantage d’ergonomie et d’ouverture pendant la manipulation.",
+                id: 1, title: "Coliath HMS", price: "13,99 €",
+                p1: "Notre équipe de grimpeurs a conçu ce mousqueton pour relier un système d’assurage au harnais en escalade et à l’alpinisme.",
+                p2: "En plus de sa fermeture automatique, ce mousqueton a une forme HMS (en poire) pour bénéficier d’avantage d’ergonomie et d’ouverture pendant la manipulation."
             },
             {
-                id: 2,
-                title: "Portefeuille en cuir",
-                price: "20,00 €",
-                p1:
-                    "Conçu en cuir grainé, il offre un toucher souple et une belle tenue dans le temps. Sa taille compacte se glisse facilement dans une poche.",
-                p2:
-                    "Organisation simple et efficace : emplacements pour cartes, billets pliés et un petit compartiment sécurisé pour la monnaie.",
+                id: 2, title: "Portefeuille en cuir", price: "20,00 €",
+                p1: "Conçu en cuir grainé, il offre un toucher souple et une belle tenue dans le temps. Sa taille compacte se glisse facilement dans une poche.",
+                p2: "Organisation simple et efficace : emplacements pour cartes, billets pliés et un petit compartiment sécurisé pour la monnaie."
+            },
+            { id: 3, title: "Veste en cuir", price: "129,00 €",
+                p1: "Veste intemporelle en cuir véritable, pensée pour un tomber net et un confort durable au quotidien.",
+                p2: "Doublure respirante, finitions renforcées, coupe droite : un essentiel polyvalent pour rehausser n’importe quelle tenue."
             },
             {
-                id: 3,
-                title: "Veste en cuir",
-                price: "129,00 €",
-                p1:
-                    "Veste intemporelle en cuir véritable, pensée pour un tomber net et un confort durable au quotidien.",
-                p2:
-                    "Doublure respirante, finitions renforcées, coupe droite : un essentiel polyvalent pour rehausser n’importe quelle tenue.",
+                id: 4, title: "Sac de frappe", price: "89,00 €",
+                p1: "Sac de frappe robuste pour l’entraînement régulier, rembourrage dense pour un retour homogène des impacts.",
+                p2: "Revêtement anti-abrasion, attaches métalliques renforcées et sangles épaisses pour une stabilité optimale."
             },
             {
-                id: 4,
-                title: "Sac de frappe",
-                price: "89,00 €",
-                p1:
-                    "Sac de frappe robuste pour l’entraînement régulier, rembourrage dense pour un retour homogène des impacts.",
-                p2:
-                    "Revêtement anti-abrasion, attaches métalliques renforcées et sangles épaisses pour une stabilité optimale.",
+                id: 5, title: "Veste costume", price: "149,00 €",
+                p1: "Veste de costume à la coupe moderne, épaule légère et ligne propre pour un porté élégant et confortable.",
+                p2: "Tissu légèrement stretch, doublure discrète et boutons teint-ton : un basique chic qui s’adapte à toutes les occasions."
             },
             {
-                id: 5,
-                title: "Veste costume",
-                price: "149,00 €",
-                p1:
-                    "Veste de costume à la coupe moderne, épaule légère et ligne propre pour un porté élégant et confortable.",
-                p2:
-                    "Tissu légèrement stretch, doublure discrète et boutons teint-ton : un basique chic qui s’adapte à toutes les occasions.",
-            },
-            {
-                id: 6,
-                title: "Lunettes de soleil",
-                price: "59,00 €",
-                p1:
-                    "Monture rectangulaire à la silhouette affirmée, verres dotés d’un traitement anti-UV pour une protection fiable.",
-                p2:
-                    "Charnières souples, légères et confortables, elles complètent facilement un look urbain ou casual.",
+                id: 6, title: "Lunettes de soleil", price: "59,00 €",
+                p1: "Monture rectangulaire à la silhouette affirmée, verres dotés d’un traitement anti-UV pour une protection fiable.",
+                p2: "Charnières souples, légères et confortables, elles complètent facilement un look urbain ou casual."
             },
         ],
         []
@@ -96,6 +71,21 @@ function MerchDetail() {
         );
     }, []);
 
+    // --- Scroll roue: seulement desktop (>=1820px) ---
+    const colWheelRef = useRef<HTMLDivElement | null>(null);
+    const [isDesktop, setIsDesktop] = useState(
+        () => typeof window !== "undefined" && window.matchMedia("(min-width: 1820px)").matches
+    );
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+        const mql = window.matchMedia("(min-width: 1820px)");
+        const onChange = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+        mql.addEventListener?.("change", onChange);
+        setIsDesktop(mql.matches);
+        return () => mql.removeEventListener?.("change", onChange);
+    }, []);
+
     const rotate = useCallback(
         (dir: 1 | -1) => {
             if (available.length <= 1) return;
@@ -114,19 +104,23 @@ function MerchDetail() {
         [available.length]
     );
 
-    const colWheelRef = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
         const el = colWheelRef.current;
         if (!el) return;
+
+        // n'attache la molette qu'en desktop
+        if (!isDesktop) return;
+
         const onWheel = (e: WheelEvent) => {
             if (Math.abs(e.deltaY) < 10) return;
             e.preventDefault();
             const dir = e.deltaY > 0 ? 1 : -1;
             rotate(dir);
         };
+
         el.addEventListener("wheel", onWheel, { passive: false });
         return () => el.removeEventListener("wheel", onWheel);
-    }, [rotate]);
+    }, [rotate, isDesktop]);
 
     const ordered = items.filter((x) => available.includes(x)).slice(0, 3);
     const centerThumbId = ordered[1] ?? ordered[0] ?? 1;
@@ -143,7 +137,6 @@ function MerchDetail() {
         [n, centerThumbId]
     );
 
-    // Fermer au clic extérieur
     useEffect(() => {
         const onDown = (e: MouseEvent) => {
             if (!detailRef.current) return;
@@ -157,67 +150,36 @@ function MerchDetail() {
 
     return (
         <>
-            <div className="relative h-screen w-screen">
-                <img
-                    src="/service/backgroundImage.png"
-                    alt=""
-                    className="absolute inset-0 h-full w-full object-cover"
-                />
-
+            <div
+                className="
+                          relative min-h-screen w-screen bg-cover bg-center bg-no-repeat
+                          overflow-auto min-[1820px]:overflow-hidden
+                        "
+                style={{ backgroundImage: "url('/service/backgroundImage.png')" }}
+            >
+                {/* ===== NAVBAR (inchangée) ===== */}
                 <header className="absolute z-20 left-[5%] top-8 w-[90%]">
-                    <div className="grid grid-cols-[1fr_auto_1fr] items-center">
-                        <nav className="flex items-center gap-6 md:gap-10 text-base md:text-2xl font-bold">
-                            <Link to="/services" className="text-[#2C0D0F] hover:opacity-80">
-                                Service
-                            </Link>
-                            <Link to="/portfolio" className="text-[#2C0D0F] hover:opacity-80">
-                                Portfolio
-                            </Link>
-                            <Link to="/merch" className="text-[#2C0D0F] hover:opacity-80">
-                                /Merch
-                            </Link>
+                    <div className="flex items-center justify-between xl:grid xl:grid-cols-[1fr_auto_1fr] xl:items-center">
+                        <nav className="hidden xl:flex items-center gap-6 md:gap-10 text-base md:text-2xl font-bold xl:order-1">
+                            <Link to="/services" className="text-[#2C0D0F] hover:opacity-80">Service</Link>
+                            <Link to="/portfolio" className="text-[#2C0D0F] hover:opacity-80">Portfolio</Link>
+                            <Link to="/merch" className="text-[#2C0D0F] hover:opacity-80">/Merch</Link>
                         </nav>
 
-                        <Link
-                            to="/"
-                            aria-label="Accueil"
-                            className="justify-self-center select-none"
-                        >
-                            <img
-                                src="/home/logo-texte-rouge.png"
-                                alt="veeesion"
-                                className="h-8 md:h-10 object-contain block"
-                            />
+                        <Link to="/" aria-label="Accueil" className="select-none order-1 xl:order-2 xl:justify-self-center">
+                            <img src="/home/logo-texte-rouge.png" alt="veeesion" className="h-6 sm:h-7 lg:h-8 xl:h-10 object-contain block" />
                         </Link>
 
-                        <div className="justify-self-end relative flex items-center gap-4 md:gap-6">
-                            {/* Panier (toggle) */}
-                            <button
-                                type="button"
-                                aria-label="Ouvrir le panier"
-                                onClick={() => setCartOpen((v) => !v)}
-                                className="relative hover:opacity-80"
-                            >
+                        <div className="order-2 xl:order-3 xl:justify-self-end relative flex items-center gap-4 md:gap-6">
+                            <button type="button" aria-label="Ouvrir le panier" onClick={() => setCartOpen((v) => !v)} className="relative hover:opacity-80">
                                 <img src="/merch/panier.png" alt="Panier" />
-                                <span className="absolute -top-1 -right-1 bg-[#65130E] text-white text-xs font-bold rounded-full px-1.5 py-0.5">
-                                  2
-                                </span>
+                                <span className="absolute -top-1 -right-1 bg-[#65130E] text-white text-xs font-bold rounded-full px-1.5 py-0.5">2</span>
                             </button>
 
-                            {/* Burger */}
-                            <Link
-                                to="/menu"
-                                aria-label="Menu"
-                                className="flex items-center justify-center h-10 w-10 md:h-[4.25rem] md:w-[4.25rem] hover:opacity-80"
-                            >
-                                <img
-                                    src="/home/burger.png"
-                                    alt="Ouvrir le menu"
-                                    className="h-full w-full object-contain block"
-                                />
+                            <Link to="/menu" aria-label="Menu" className="flex items-center justify-center h-10 w-10 md:h-[4.25rem] md:w-[4.25rem] hover:opacity-80">
+                                <img src="/home/burger.png" alt="Ouvrir le menu" className="h-full w-full object-contain block" />
                             </Link>
 
-                            {/* Cart dropdown */}
                             {cartOpen && (
                                 <div className="absolute right-24 top-18 z-30">
                                     <div className="relative">
@@ -225,39 +187,27 @@ function MerchDetail() {
                                             <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-black/10">
                                                 <div className="flex items-center gap-3">
                                                     <div className="h-8 w-8 rounded bg-black/10 grid place-items-center">
-                                                        <img
-                                                            src="/merchDetail/1/productCard-1.png"
-                                                            alt=""
-                                                            className="h-6 w-6 object-contain"
-                                                        />
+                                                        <img src="/merchDetail/1/productCard-1.png" alt="" className="h-6 w-6 object-contain" />
                                                     </div>
                                                     <div className="leading-tight">
                                                         <div className="text-base">Coliath HMS</div>
                                                         <div className="text-base font-semibold">13,99 €</div>
                                                     </div>
                                                 </div>
-                                                <button aria-label="Retirer">
-                                                    <img src="/merch/remove.png" alt="" />
-                                                </button>
+                                                <button aria-label="Retirer"><img src="/merch/remove.png" alt="" /></button>
                                             </div>
 
                                             <div className="flex items-center justify-between gap-3 px-4 py-3">
                                                 <div className="flex items-center gap-3">
                                                     <div className="h-8 w-8 rounded bg-black/10 grid place-items-center">
-                                                        <img
-                                                            src="/merch/productCard-2.png"
-                                                            alt=""
-                                                            className="h-6 w-6 object-contain"
-                                                        />
+                                                        <img src="/merch/productCard-2.png" alt="" className="h-6 w-6 object-contain" />
                                                     </div>
                                                     <div className="leading-tight">
                                                         <div className="text-base">Portefeuille en cuir</div>
                                                         <div className="text-base font-semibold">20,00 €</div>
                                                     </div>
                                                 </div>
-                                                <button aria-label="Retirer">
-                                                    <img src="/merch/remove.png" alt="" />
-                                                </button>
+                                                <button aria-label="Retirer"><img src="/merch/remove.png" alt="" /></button>
                                             </div>
                                         </div>
 
@@ -274,56 +224,81 @@ function MerchDetail() {
                             )}
                         </div>
                     </div>
+
+                    {/* liens mobile/tablette sous le logo */}
+                    <nav className="mt-4 flex justify-center gap-6 font-bold text-sm sm:text-base lg:text-lg xl:hidden">
+                        <Link to="/services" className="text-[#2C0D0F] hover:opacity-80">Service</Link>
+                        <Link to="/portfolio" className="text-[#2C0D0F] hover:opacity-80">Portfolio</Link>
+                        <Link to="/merch" className="text-[#2C0D0F] hover:opacity-80">/Merch</Link>
+                    </nav>
                 </header>
 
+                {/* ===== MAIN ===== */}
                 <main className="absolute left-[5%] top-[8rem] w-[90%]">
-                    <div className="grid grid-cols-[12.5rem_1fr] gap-16 relative">
-                        {/* Grande image produit (vignette du milieu) */}
+                    <div
+                        className="
+                                      grid grid-cols-1 min-[900px]:grid-cols-[12.5rem_1fr]
+                                      gap-16 relative
+                                    "
+                    >
+                        {/* Grande image produit (desktop seulement) */}
                         <img
                             src={
                                 n === 1 && centerThumbId === 1
-                                    ? `/merchDetail/1/moursquet-bg-test.png`
+                                    ? `/merchDetail/1/mousquet-bg-test.png`
                                     : `/merchDetail/${n}/productCard-${centerThumbId}.png`
                             }
                             alt=""
-                            className="pointer-events-none select-none absolute
-                         right-[-5%] top-[-10rem] w-[60rem]
-                         rotate-[21deg] z-0 opacity-100"
+                            className="
+                                        pointer-events-none select-none absolute right-[-5%] top-[-10rem] w-[60rem]
+                                        rotate-[21deg] z-0 opacity-100
+                                        max-[1819px]:hidden
+                                      "
                         />
 
+                        {/* CROIX (desktop seulement) */}
                         {n === 1 && centerThumbId === 1 && (
                             <>
-                                {/* Croix 1 */}
                                 <button
                                     type="button"
                                     aria-label="Détails produit"
                                     onClick={() => onCrossClick("c1")}
-                                    className={`absolute z-10 left-[75%] top-[17rem] select-none
-                                              transition-transform duration-200 ease-out
-                                              ${activeDetail === "c1" ? "rotate-45" : "rotate-0"}`}
+                                    className={`
+                                                absolute z-10 left-[75%] top-[17rem] select-none
+                                                transition-transform duration-200 ease-out
+                                                ${activeDetail === "c1" ? "rotate-45" : "rotate-0"}
+                                                max-[1819px]:hidden
+                                              `}
                                 >
                                     <img src="/merchDetail/product-detail.png" alt="" className="block" />
                                 </button>
 
-                                {/* Croix 2 */}
                                 <button
                                     type="button"
                                     aria-label="Détails produit"
                                     onClick={() => onCrossClick("c2")}
-                                    className={`absolute z-10 left-[90%] top-[25rem] select-none
-                                              transition-transform duration-200 ease-out
-                                              ${activeDetail === "c2" ? "rotate-45" : "rotate-0"}`}
+                                    className={`
+                                                absolute z-10 left-[90%] top-[25rem] select-none
+                                                transition-transform duration-200 ease-out
+                                                ${activeDetail === "c2" ? "rotate-45" : "rotate-0"}
+                                                max-[1819px]:hidden
+                                              `}
                                 >
                                     <img src="/merchDetail/product-detail.png" alt="" className="block" />
                                 </button>
                             </>
                         )}
 
-
-                        {/* Colonne images (200 × 800) */}
+                        {/* Colonne images — visible en ≥900px, cachée en <900px (scroll roue seulement desktop via JS) */}
                         <div
                             ref={colWheelRef}
-                            className="w-[12.5rem] h-[45rem] flex flex-col items-center gap-4"
+                            className="
+                                        hidden min-[900px]:flex
+                                        w-[12.5rem]
+                                        h-[45rem]
+                                        max-[1819px]:h-auto
+                                        flex-col items-center gap-4
+                                      "
                         >
                             <img
                                 src="/merchDetail/arrow-top.png"
@@ -335,9 +310,7 @@ function MerchDetail() {
                             {ordered.map((num, idx) => (
                                 <div
                                     key={num}
-                                    className={`w-full rounded-xl p-2 ${
-                                        idx === centerIndex ? "bg-white/60" : "bg-white/30"
-                                    }`}
+                                    className={`w-full rounded-xl p-2 ${idx === centerIndex ? "bg-white/60" : "bg-white/30"}`}
                                     onClick={() => slideTo(idx)}
                                 >
                                     <img
@@ -358,27 +331,34 @@ function MerchDetail() {
                         </div>
 
                         {/* --------- Partie droite (texte) --------- */}
-                        <div className="max-w-[39rem] pt-2 mx-35 my-20">
-                            <h1 className="text-[#2C0D0F] font-bold leading-[0.95] tracking-tight text-[4.5rem]">
+                        <div
+                            className="
+                                        max-w-[39rem] pt-2 mx-35 my-20
+                                        max-[1819px]:my-10
+                                        max-[899px]:my-6 max-[899px]:w-[90%] max-[899px]:max-w-none max-[899px]:mx-auto
+                                      "
+                        >
+                            {/* TITRE : tailles adaptées */}
+                            <h1 className="text-[#2C0D0F] font-bold leading-[0.95] tracking-tight text-[4.5rem] max-[1819px]:text-[3.5rem] max-[899px]:text-[2.25rem]">
                                 {product.title}
                             </h1>
 
-                            <div className="mt-2 text-[#2C0D0F] text-[20px] font-bold">
+                            <div className="mt-2 text-[#2C0D0F] text-[20px] font-bold max-[1819px]:text-[18px] max-[899px]:text-[16px]">
                                 {product.price}
                             </div>
 
-                            <p className="mt-6 text-[#2C0D0F] text-[20px] leading-[1.4] font-medium">
+                            <p className="mt-6 text-[#2C0D0F] text-[20px] leading-[1.4] font-medium max-[1819px]:text-[18px] max-[899px]:text-[16px]">
                                 {product.p1}
                             </p>
-                            <p className="mt-4 text-[#2C0D0F] text-[20px] leading-[1.4] font-medium">
+                            <p className="mt-4 text-[#2C0D0F] text-[20px] leading-[1.4] font-medium max-[1819px]:text-[18px] max-[899px]:text-[16px]">
                                 {product.p2}
                             </p>
 
-                            <div className="mt-16 flex items-center gap-4">
-                                <span className="text-[#2C0D0F] text-[20px]">Taille :</span>
+                            <div className="mt-16 max-[1819px]:mt-10 max-[899px]:mt-6 flex items-center gap-4">
+                                <span className="text-[#2C0D0F] text-[20px] max-[1819px]:text-[18px] max-[899px]:text-[16px]">Taille :</span>
 
                                 <select
-                                    className="px-4 py-2 rounded-full border border-[#2C0D0F]/30 text-[20px] bg-white/80 focus:outline-none cursor-pointer"
+                                    className="px-4 py-2 rounded-full border border-[#2C0D0F]/30 text-[20px] bg-white/80 focus:outline-none cursor-pointer max-[1819px]:text-[18px] max-[899px]:text-[16px]"
                                     defaultValue="Medium"
                                 >
                                     <option value="Small">Small</option>
@@ -387,16 +367,16 @@ function MerchDetail() {
                                 </select>
                             </div>
 
-                            <div className="mt-16 flex items-center gap-4">
+                            <div className="mt-16 max-[1819px]:mt-10 max-[899px]:mt-6 flex items-center gap-4">
                                 <button
                                     type="button"
-                                    className="px-6 py-3 rounded-full bg-[#F1F1F1] text-[#2C0D0F] text-[20px]"
+                                    className="px-6 py-3 rounded-full bg-[#F1F1F1] text-[#2C0D0F] text-[20px] max-[1819px]:text-[18px] max-[899px]:text-[16px]"
                                 >
                                     Ajouter au panier
                                 </button>
                                 <button
                                     type="button"
-                                    className="px-6 py-3 rounded-full text-white text-[20px]"
+                                    className="px-6 py-3 rounded-full text-white text-[20px] max-[1819px]:text-[18px] max-[899px]:text-[16px]"
                                     style={{ backgroundColor: "#65130E" }}
                                 >
                                     Acheter le produit
@@ -404,17 +384,14 @@ function MerchDetail() {
                             </div>
                         </div>
 
-                        {/* ---------- Dropdown d'information (ancré sous la croix active) ---------- */}
+                        {/* ---------- Dropdown d'information (desktop seulement) ---------- */}
                         {activeDetail && centerThumbId === 1 && (
                             <div
                                 ref={detailRef}
-                                className="absolute z-30"
+                                className="absolute z-30 max-[1819px]:hidden"
                                 style={{
                                     left: activeDetail === "c1" ? "75%" : "90%",
-                                    top:
-                                        activeDetail === "c1"
-                                            ? "calc(17rem + 3.75rem)" // 48px icône + marge ≈ 3.75rem
-                                            : "calc(25rem + 3.75rem)",
+                                    top: activeDetail === "c1" ? "calc(17rem + 3.75rem)" : "calc(25rem + 3.75rem)",
                                     transform: "translateX(-50%)",
                                 }}
                             >

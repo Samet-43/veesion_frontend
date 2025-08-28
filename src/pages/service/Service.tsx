@@ -5,14 +5,11 @@ type ServiceItem = {
     id: number;
     title: string;
     img: string;
-    // lignes de texte (chaque entrée sera rendue dans un <span> suivi de <br/>)
     lines: string[];
-    // variante de style pour la colonne gauche (le 01 est spécial dans ta maquette)
     leftVariant: "first" | "normal";
 };
 
 function Service() {
-    // --- Données (titres, images, textes) ---
     const items: ServiceItem[] = useMemo(
         () => [
             {
@@ -25,7 +22,7 @@ function Service() {
                     "Nous assurons une conception graphique adaptée à tous les formats (web, réseaux sociaux, lookbooks, print) pour renforcer votre identité.",
                     "Chaque projet est conçu sur mesure pour créer un univers visuel qui vous ressemble, en élaborant vos gammes, votre storytelling, votre image de marque et votre stratégie de création de communauté."
                 ],
-                leftVariant: "first",
+                leftVariant: "first"
             },
             {
                 id: 2,
@@ -35,7 +32,7 @@ function Service() {
                     "Nous clarifions vos priorités et votre ton de marque pour aller à l’essentiel sans compromis.",
                     "Des livrables concrets et prêts à l’emploi pour gagner du temps au quotidien."
                 ],
-                leftVariant: "normal",
+                leftVariant: "normal"
             },
             {
                 id: 3,
@@ -45,7 +42,7 @@ function Service() {
                     "Pré-production, tournage et post-production : nous pilotons chaque étape avec des équipes adaptées.",
                     "Des contenus optimisés pour vos canaux clés (site, réseaux, campagnes)."
                 ],
-                leftVariant: "normal",
+                leftVariant: "normal"
             },
             {
                 id: 4,
@@ -55,7 +52,7 @@ function Service() {
                     "Nous définissons un plan d’actions mesurable : objectifs, messages, canaux et calendrier.",
                     "Un suivi clair pour itérer sans alourdir vos process."
                 ],
-                leftVariant: "normal",
+                leftVariant: "normal"
             },
             {
                 id: 5,
@@ -65,7 +62,7 @@ function Service() {
                     "Des formats cohérents avec votre identité : visuels, éditorial, vidéo, print.",
                     "Chaque contenu sert vos objectifs de marque et de performance."
                 ],
-                leftVariant: "normal",
+                leftVariant: "normal"
             },
             {
                 id: 6,
@@ -75,61 +72,77 @@ function Service() {
                     "Indicateurs simples, points réguliers et apprentissages actionnables.",
                     "Nous ajustons en continu pour maximiser l’impact."
                 ],
-                leftVariant: "normal",
-            },
+                leftVariant: "normal"
+            }
         ],
         []
     );
 
-    // --- State ---
-    const [active, setActive] = useState(0); // index 0..5
+    const [active, setActive] = useState(0);
     const [phase, setPhase] = useState<"" | "leave-left" | "leave-right" | "enter-left" | "enter-right">("");
     const [isAnimating, setIsAnimating] = useState(false);
 
-    // --- helpers animation ---
     function animateTo(targetIndex: number) {
         if (targetIndex === active || isAnimating) return;
         const dir = targetIndex > active ? 1 : -1;
-
-        // phase 1 : on sort (slide léger + fade)
         setIsAnimating(true);
         setPhase(dir === 1 ? "leave-left" : "leave-right");
-
-        // après la sortie, on change de contenu puis on entre
         window.setTimeout(() => {
             setActive(targetIndex);
             setPhase(dir === 1 ? "enter-right" : "enter-left");
-            // fin d'entrée → reset phase
             window.setTimeout(() => {
                 setPhase("");
                 setIsAnimating(false);
-            }, 300); // doit matcher duration-300
-        }, 250); // doit matcher ~ duration-300
+            }, 300);
+        }, 250);
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     function next() {
         animateTo((active + 1) % items.length);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     function prev() {
         animateTo((active - 1 + items.length) % items.length);
     }
 
-    // --- Scroll global (haut/bas) ⇒ précédent/suivant ---
     useEffect(() => {
+        const mq = window.matchMedia("(min-width: 1820px)");
+        let attached = false;
+
         const onWheel = (e: WheelEvent) => {
-            // seuil pour trackpads
             if (Math.abs(e.deltaY) < 10) return;
             if (isAnimating) return;
-            e.preventDefault(); // on “consomme” le scroll pendant l’anim
-            if (e.deltaY > 0) next(); else prev();
+            e.preventDefault();
+            if (e.deltaY > 0) next();
+            else prev();
         };
-        window.addEventListener("wheel", onWheel, { passive: false });
-        return () => window.removeEventListener("wheel", onWheel, { capture: false });
-    }, [isAnimating, active, next, prev]);
 
-    // --- classes d’animation pour le bloc de droite ---
+        const attach = () => {
+            if (!attached) {
+                window.addEventListener("wheel", onWheel, { passive: false });
+                attached = true;
+            }
+        };
+        const detach = () => {
+            if (attached) {
+                window.removeEventListener("wheel", onWheel);
+                attached = false;
+            }
+        };
+
+        const sync = () => {
+            if (mq.matches) attach();
+            else detach();
+        };
+
+        sync();
+        mq.addEventListener("change", sync);
+
+        return () => {
+            detach();
+            mq.removeEventListener("change", sync);
+        };
+    }, [isAnimating, active]);
+
     const rightAnimClass =
         phase === "leave-left"
             ? "opacity-0 -translate-x-2"
@@ -141,172 +154,157 @@ function Service() {
                         ? "opacity-0 translate-x-2"
                         : "opacity-100 translate-x-0";
 
-    // === RENDER ===
     return (
         <>
-            <div className="relative h-screen w-screen">
-                {/* Background */}
-                <img
-                    src="/service/backgroundImage.png"
-                    alt=""
-                    className="object-cover h-full w-full"
+            <div className="relative w-screen min-h-full">
+                <div
+                    aria-hidden
+                    className="pointer-events-none fixed inset-0 -z-10 bg-[url('/service/backgroundImage.png')] bg-cover bg-center bg-no-repeat"
                 />
 
                 <header className="absolute z-20 left-[5%] top-8 w-[90%]">
-                    <div className="grid grid-cols-[1fr_auto_1fr] items-center">
-                        <nav className="flex items-center gap-6 md:gap-10 text-base md:text-2xl font-bold">
+                    <div className="flex items-center justify-between xl:grid xl:grid-cols-[1fr_auto_1fr] xl:items-center">
+                        <nav className="hidden xl:flex items-center gap-6 md:gap-10 text-base md:text-2xl font-bold xl:order-1">
                             <Link to="/services" className="text-[#2C0D0F] hover:opacity-80">/Service</Link>
                             <Link to="/portfolio" className="text-[#2C0D0F] hover:opacity-80">Portfolio</Link>
                             <Link to="/merch" className="text-[#2C0D0F] hover:opacity-80">Merch</Link>
                         </nav>
 
-                        <Link to="/" aria-label="Accueil" className="justify-self-center select-none">
-                            <img
-                                src="/home/logo-texte-rouge.png"
-                                alt="veeesion"
-                                className="h-8 md:h-10 object-contain block"
-                            />
+                        <Link to="/" aria-label="Accueil" className="select-none order-1 xl:order-2 xl:justify-self-center">
+                            <img src="/home/logo-texte-rouge.png" alt="veeesion" className="h-6 sm:h-7 lg:h-8 xl:h-10 object-contain block" />
                         </Link>
 
-                        <div className="justify-self-end">
-                            <Link
-                                to="/menu"
-                                aria-label="Menu"
-                                className="flex items-center justify-center h-10 w-10 md:h-[4.25rem] md:w-[4.25rem] hover:opacity-80"
-                            >
-                                <img
-                                    src="/home/burger.png"
-                                    alt="Ouvrir le menu"
-                                    className="h-full w-full object-contain block"
-                                />
+                        <div className="order-2 xl:order-3 xl:justify-self-end">
+                            <Link to="/menu" aria-label="Menu" className="flex items-center justify-center h-10 w-10 md:h-[4.25rem] md:w-[4.25rem] hover:opacity-80">
+                                <img src="/home/burger.png" alt="Ouvrir le menu" className="h-full w-full object-contain block" />
                             </Link>
                         </div>
                     </div>
+
+                    <nav className="mt-4 flex justify-center gap-6 font-bold text-base sm:text-lg lg:text-xl xl:hidden">
+                        <Link to="/services" className="text-[#2C0D0F] hover:opacity-80">/Service</Link>
+                        <Link to="/portfolio" className="text-[#2C0D0F] hover:opacity-80">Portfolio</Link>
+                        <Link to="/merch" className="text-[#2C0D0F] hover:opacity-80">Merch</Link>
+                    </nav>
                 </header>
 
+                <div className="hidden min-[1820px]:block">
+                    <div className="absolute top-48 left-32 w-[60.875rem] h-[42.625rem] bg-transparent space-y-12">
+                        {items.map((item, index) => (
+                            <button
+                                key={item.id}
+                                type="button"
+                                onClick={() => animateTo(index)}
+                                className="flex items-start gap-4 text-left focus:outline-none cursor-pointer"
+                            >
+                                <span
+                                    className={`mt-2 inline-flex h-8 w-7 items-center justify-center font-bold text-2xl leading-none ${
+                                        active === index ? "text-[#65130E]" : "text-[#2C0D0F]"
+                                    }`}
+                                >
+                                  {String(item.id).padStart(2, "0")}
+                                </span>
 
-                {/* Bloc gauche (liste cliquable) */}
-                <div className="absolute top-48 left-32 w-[60.875rem] h-[42.625rem] bg-transparent space-y-12">
-                    {/* 01 */}
-                    <button
-                        type="button"
-                        onClick={() => animateTo(0)}
-                        className="flex items-start gap-4 text-left focus:outline-none cursor-pointer"
-                    >
-                        <span
-                            className={`mt-2 inline-flex h-8 w-7 items-center justify-center font-bold text-2xl leading-none ${
-                                active === 0 ? "text-[#65130E]" : "text-[#2C0D0F]"
-                            }`}
+                                <h3
+                                    className={`uppercase leading-none text-5xl max-w-[57rem] ${
+                                        active === index ? "font-bold text-[#65130E]" : "font-normal text-[#2C0D0F]"
+                                    }`}
+                                >
+                                    {item.title.split("\n").map((line, i) => (
+                                        <span key={i} className="block">
+                                          {line}
+                                        </span>
+                                    ))}
+                                </h3>
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="absolute top-48 left-[69.5rem] w-[43rem] h-auto bg-transparent space-y-8">
+                        <img
+                            key={`img-${items[active].id}`}
+                            src={items[active].img}
+                            alt="service"
+                            className={`w-full h-auto object-cover transition-all duration-300 ease-out will-change-transform ${rightAnimClass}`}
+                        />
+
+                        <div
+                            key={`text-${items[active].id}`}
+                            className={`text-[#2C0D0F] font-medium text-[1.25rem] leading-[1.35] space-y-0 transition-all duration-300 ease-out will-change-transform ${rightAnimClass}`}
                         >
-                          01
-                        </span>
+                            {items[active].lines.map((line, i) => (
+                                <span key={i}>
+                                    {line}
+                                    <br />
+                                    {i < items[active].lines.length - 1 && <br />}
+                                </span>
+                            ))}
 
-                        <h3
-                            className={`uppercase leading-none text-5xl max-w-[57rem] ${
-                                active === 0 ? "font-bold text-[#65130E]" : "font-normal text-[#2C0D0F]"
-                            }`}
-                        >
-                            STRATÉGIE ET DIRECTION<br />ARTISTIQUE DE MARQUE
-                        </h3>
-                    </button>
-
-                    {/* 02 */}
-                    <button
-                        type="button"
-                        onClick={() => animateTo(1)}
-                        className="flex items-center gap-4 text-left focus:outline-none cursor-pointer"
-                    >
-                        <span className={`inline-flex h-8 w-8 items-center justify-center font-bold text-2xl leading-none ${active === 1 ? "text-[#65130E]" : "text-[#2C0D0F]"}`}>
-                          02
-                        </span>
-                        <h3 className={`uppercase leading-none text-5xl ${active === 1 ? "font-bold text-[#65130E]" : "font-normal text-[#2C0D0F]"}`}>
-                            SIMPLE
-                        </h3>
-                    </button>
-
-                    {/* 03 */}
-                    <button
-                        type="button"
-                        onClick={() => animateTo(2)}
-                        className="flex items-center gap-4 text-left focus:outline-none cursor-pointer"
-                    >
-                        <span className={`inline-flex h-8 w-8 items-center justify-center font-bold text-2xl leading-none ${active === 2 ? "text-[#65130E]" : "text-[#2C0D0F]"}`}>
-                          03
-                        </span>
-                        <h3 className={`uppercase leading-none text-5xl ${active === 2 ? "font-bold text-[#65130E]" : "font-normal text-[#2C0D0F]"}`}>
-                            PRODUCTION
-                        </h3>
-                    </button>
-
-                    {/* 04 */}
-                    <button
-                        type="button"
-                        onClick={() => animateTo(3)}
-                        className="flex items-center gap-4 text-left focus:outline-none cursor-pointer"
-                    >
-                        <span className={`inline-flex h-8 w-8 items-center justify-center font-bold text-2xl leading-none ${active === 3 ? "text-[#65130E]" : "text-[#2C0D0F]"}`}>
-                          04
-                        </span>
-                        <h3 className={`uppercase leading-none text-5xl ${active === 3 ? "font-bold text-[#65130E]" : "font-normal text-[#2C0D0F]"}`}>
-                            STRATÉGIE MAKETING
-                        </h3>
-                    </button>
-
-                    {/* 05 */}
-                    <button
-                        type="button"
-                        onClick={() => animateTo(4)}
-                        className="flex items-center gap-4 text-left focus:outline-none cursor-pointer"
-                    >
-                        <span className={`inline-flex h-8 w-8 items-center justify-center font-bold text-2xl leading-none ${active === 4 ? "text-[#65130E]" : "text-[#2C0D0F]"}`}>
-                          05
-                        </span>
-                        <h3 className={`uppercase leading-none text-5xl ${active === 4 ? "font-bold text-[#65130E]" : "font-normal text-[#2C0D0F]"}`}>
-                            CRÉATION DE CONTENU
-                        </h3>
-                    </button>
-
-                    {/* 06 */}
-                    <button
-                        type="button"
-                        onClick={() => animateTo(5)}
-                        className="flex items-center gap-4 text-left focus:outline-none cursor-pointer"
-                    >
-                        <span className={`inline-flex h-8 w-8 items-center justify-center font-bold text-2xl leading-none ${active === 5 ? "text-[#65130E]" : "text-[#2C0D0F]"}`}>
-                          06
-                        </span>
-                        <h3 className={`uppercase leading-none text-5xl ${active === 5 ? "font-bold text-[#65130E]" : "font-normal text-[#2C0D0F]"}`}>
-                            SUIVI DE CROISSANCE
-                        </h3>
-                    </button>
+                            <button className="bg-[#65130E] text-white font-bold text-[1.25rem] tracking-[-0.02em] px-8 py-3 mt-6 rounded-full hover:opacity-90 transition cursor-pointer">
+                                Contactez-nous
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Bloc droit (contenu dynamique) */}
-                <div className="absolute top-48 left-[69.5rem] w-[43rem] h-auto bg-transparent space-y-8">
-                    {/* Image */}
-                    <img
-                        key={`img-${items[active].id}`}
-                        src={items[active].img}
-                        alt="service"
-                        className={`w-full h-auto object-cover transition-all duration-300 ease-out will-change-transform ${rightAnimClass}`}
-                    />
+                <div className="block min-[1820px]:hidden">
+                    <div className="absolute top-40 left-1/2 -translate-x-1/2 w-[90%] max-w-[1200px] flex flex-col gap-10 pb-10">
+                        <div className="space-y-8">
+                            {items.map((item, index) => (
+                                <button
+                                    key={item.id}
+                                    type="button"
+                                    onClick={() => animateTo(index)}
+                                    className="flex items-start gap-4 text-left focus:outline-none cursor-pointer"
+                                >
+                                    <span
+                                        className={`mt-1 inline-flex h-8 w-8 items-center justify-center font-bold text-xl sm:text-2xl ${
+                                            active === index ? "text-[#65130E]" : "text-[#2C0D0F]"
+                                        }`}
+                                    >
+                                      {String(item.id).padStart(2, "0")}
+                                    </span>
 
-                    {/* Texte + bouton (même structure/tailles) */}
-                    <div
-                        key={`text-${items[active].id}`}
-                        className={`text-[#2C0D0F] font-medium text-[1.25rem] leading-[1.35] space-y-0 transition-all duration-300 ease-out will-change-transform ${rightAnimClass}`}
-                    >
-                        {items[active].lines.map((line, i) => (
-                            <span key={i}>
-                                {line}
-                                <br />
-                                {i < items[active].lines.length - 1 && <br />}
-                            </span>
-                        ))}
+                                    <h3
+                                        className={`uppercase leading-tight text-3xl sm:text-4xl ${
+                                            active === index ? "font-bold text-[#65130E]" : "font-normal text-[#2C0D0F]"
+                                        }`}
+                                    >
+                                        {item.title.split("\n").map((line, i) => (
+                                            <span key={i} className="block">
+                                              {line}
+                                            </span>
+                                        ))}
+                                    </h3>
+                                </button>
+                            ))}
+                        </div>
 
-                        <button className="bg-[#65130E] text-white font-bold text-[1.25rem] tracking-[-0.02em] px-8 py-3 mt-6 rounded-full hover:opacity-90 transition cursor-pointer">
-                            Contactez-nous
-                        </button>
+                        <div className="space-y-6">
+                            <img
+                                key={`img-m-${items[active].id}`}
+                                src={items[active].img}
+                                alt="service"
+                                className={`w-full h-auto object-cover transition-all duration-300 ${rightAnimClass}`}
+                            />
+
+                            <div
+                                key={`text-m-${items[active].id}`}
+                                className={`text-[#2C0D0F] font-medium text-base sm:text-lg leading-[1.35] transition-all duration-300 ${rightAnimClass}`}
+                            >
+                                {items[active].lines.map((line, i) => (
+                                    <span key={i}>
+                                        {line}
+                                        <br />
+                                        {i < items[active].lines.length - 1 && <br />}
+                                    </span>
+                                ))}
+
+                                <button className="bg-[#65130E] text-white font-bold text-base sm:text-lg px-6 py-2 sm:px-8 sm:py-3 mt-6 rounded-full hover:opacity-90 transition">
+                                    Contactez-nous
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
