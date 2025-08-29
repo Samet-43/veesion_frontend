@@ -157,80 +157,65 @@ function MerchDetail() {
                         "
                 style={{ backgroundImage: "url('/service/backgroundImage.png')" }}
             >
-                {/* ===== NAVBAR (inchangée) ===== */}
-                <header className="absolute z-20 left-[5%] top-8 w-[90%]">
+                <header className="absolute z-20 left-[5%] top-4 sm:top-6 md:top-8 w-[90%] h-[4.25rem]">
                     <div className="flex items-center justify-between xl:grid xl:grid-cols-[1fr_auto_1fr] xl:items-center">
-                        <nav className="hidden xl:flex items-center gap-6 md:gap-10 text-base md:text-2xl font-bold xl:order-1">
+                        {/* liens — visibles dès tablette, cachés en mobile */}
+                        <nav className="hidden sm:flex items-center gap-6 md:gap-10 xl:order-1 font-bold
+                                        text-sm md:text-xl xl:text-2xl">
                             <Link to="/services" className="text-[#2C0D0F] hover:opacity-80">Service</Link>
                             <Link to="/portfolio" className="text-[#2C0D0F] hover:opacity-80">Portfolio</Link>
                             <Link to="/merch" className="text-[#2C0D0F] hover:opacity-80">/Merch</Link>
                         </nav>
 
-                        <Link to="/" aria-label="Accueil" className="select-none order-1 xl:order-2 xl:justify-self-center">
-                            <img src="/home/logo-texte-rouge.png" alt="veeesion" className="h-6 sm:h-7 lg:h-8 xl:h-10 object-contain block" />
+                        {/* logo */}
+                        <Link
+                            to="/"
+                            aria-label="Accueil"
+                            className="select-none order-1 xl:order-2 xl:justify-self-center"
+                        >
+                            <img
+                                src="/home/logo-texte-rouge.png"
+                                alt="veeesion"
+                                className="block h-10 object-contain"
+                            />
                         </Link>
 
+                        {/* burger + panier */}
                         <div className="order-2 xl:order-3 xl:justify-self-end relative flex items-center gap-4 md:gap-6">
-                            <button type="button" aria-label="Ouvrir le panier" onClick={() => setCartOpen((v) => !v)} className="relative hover:opacity-80">
+                            {/* Panier masqué pour le moment */}
+                            <button
+                                type="button"
+                                aria-label="Ouvrir le panier"
+                                onClick={() => setCartOpen((v) => !v)}
+                                className="relative hover:opacity-80 hidden"
+                            >
                                 <img src="/merch/panier.png" alt="Panier" />
-                                <span className="absolute -top-1 -right-1 bg-[#65130E] text-white text-xs font-bold rounded-full px-1.5 py-0.5">2</span>
+                                <span className="absolute -top-1 -right-1 bg-[#65130E] text-white text-xs font-bold rounded-full px-1.5 py-0.5">
+                                  2
+                                </span>
                             </button>
 
-                            <Link to="/menu" aria-label="Menu" className="flex items-center justify-center h-10 w-10 md:h-[4.25rem] md:w-[4.25rem] hover:opacity-80">
-                                <img src="/home/burger.png" alt="Ouvrir le menu" className="h-full w-full object-contain block" />
+                            {/* Burger */}
+                            <Link
+                                to="/menu"
+                                aria-label="Menu"
+                                className="flex items-center justify-center h-[4.25rem] w-[4.25rem] hover:opacity-80"
+                            >
+                                <img
+                                    src="/home/burger.png"
+                                    alt="Ouvrir le menu"
+                                    className="block h-full w-full object-contain"
+                                />
                             </Link>
 
+                            {/* Dropdown du panier (masqué aussi) */}
                             {cartOpen && (
-                                <div className="absolute right-24 top-18 z-30">
-                                    <div className="relative">
-                                        <div className="w-[18rem] rounded-[0.75rem] bg-white shadow-[0_10px_24px_rgba(0,0,0,0.18)]">
-                                            <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-black/10">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="h-8 w-8 rounded bg-black/10 grid place-items-center">
-                                                        <img src="/merchDetail/1/productCard-1.png" alt="" className="h-6 w-6 object-contain" />
-                                                    </div>
-                                                    <div className="leading-tight">
-                                                        <div className="text-base">Coliath HMS</div>
-                                                        <div className="text-base font-semibold">13,99 €</div>
-                                                    </div>
-                                                </div>
-                                                <button aria-label="Retirer"><img src="/merch/remove.png" alt="" /></button>
-                                            </div>
-
-                                            <div className="flex items-center justify-between gap-3 px-4 py-3">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="h-8 w-8 rounded bg-black/10 grid place-items-center">
-                                                        <img src="/merch/productCard-2.png" alt="" className="h-6 w-6 object-contain" />
-                                                    </div>
-                                                    <div className="leading-tight">
-                                                        <div className="text-base">Portefeuille en cuir</div>
-                                                        <div className="text-base font-semibold">20,00 €</div>
-                                                    </div>
-                                                </div>
-                                                <button aria-label="Retirer"><img src="/merch/remove.png" alt="" /></button>
-                                            </div>
-                                        </div>
-
-                                        <button
-                                            type="button"
-                                            className="absolute left-1/2 -translate-x-1/2 top-[calc(100%+0.5rem)] w-[18rem] rounded-full py-2 text-white text-center"
-                                            style={{ backgroundColor: "#65130E" }}
-                                        >
-                                            <span className="text-[20px] font-semibold">Continuer</span>{" "}
-                                            <span className="text-[18px] font-normal ml-2">(33,99€)</span>
-                                        </button>
-                                    </div>
+                                <div className="absolute right-24 top-18 z-30 hidden">
+                                    {/* contenu panier */}
                                 </div>
                             )}
                         </div>
                     </div>
-
-                    {/* liens mobile/tablette sous le logo */}
-                    <nav className="mt-4 flex justify-center gap-6 font-bold text-sm sm:text-base lg:text-lg xl:hidden">
-                        <Link to="/services" className="text-[#2C0D0F] hover:opacity-80">Service</Link>
-                        <Link to="/portfolio" className="text-[#2C0D0F] hover:opacity-80">Portfolio</Link>
-                        <Link to="/merch" className="text-[#2C0D0F] hover:opacity-80">/Merch</Link>
-                    </nav>
                 </header>
 
                 {/* ===== MAIN ===== */}
@@ -367,7 +352,7 @@ function MerchDetail() {
                                 </select>
                             </div>
 
-                            <div className="mt-16 max-[1819px]:mt-10 max-[899px]:mt-6 flex items-center gap-4">
+                            <div className="mt-16 max-[1819px]:mt-10 max-[899px]:mt-6 flex items-center gap-4 hidden">
                                 <button
                                     type="button"
                                     className="px-6 py-3 rounded-full bg-[#F1F1F1] text-[#2C0D0F] text-[20px] max-[1819px]:text-[18px] max-[899px]:text-[16px]"
