@@ -6,34 +6,26 @@ function PortfolioDetail() {
     const n = Math.max(1, Math.min(7, Number(id) || 1));
     const heroSrc = `/portfolio/pic-${n}.jpg`;
 
-    const { title, date } = useMemo(() => {
-        const map: Record<number, { title: string; date: string }> = {
-            1: { title: "Project 1", date: "08.25" },
-            2: { title: "Project 2", date: "08.25" },
-            3: { title: "Project 3", date: "08.25" },
-            4: { title: "YTZ Studio", date: "08.25" },
-            5: { title: "Project 5", date: "08.25" },
-            6: { title: "Project 6", date: "08.25" },
-            7: { title: "Project 7", date: "08.25" },
+    const { title, date, color } = useMemo(() => {
+        const map: Record<number, { title: string; date: string; color: string }> = {
+            1: { title: "Project 1", date: "08.25", color: "#0D0221" },
+            2: { title: "Project 2", date: "08.25", color: "#121417" },
+            3: { title: "Project 3", date: "08.25", color: "#6B5F52" },
+            4: { title: "YTZ Studio", date: "08.25", color: "#2C0D0F" },
+            5: { title: "Project 5", date: "08.25", color: "#0A0A0A" },
+            6: { title: "Project 6", date: "08.25", color: "#A78B73" },
+            7: { title: "Project 7", date: "08.25", color: "#123456" },
         };
-        return map[n] ?? { title: `Project ${n}`, date: "" };
+        return map[n];
     }, [n]);
 
     return (
         <>
-            <div className="relative bg-[#2C0D0F]">
-                {/* HERO */}
-                <img
-                    src={heroSrc}
-                    alt={`Projet ${n}`}
-                    className="
-            w-full object-cover object-[center_35%] select-none
-            h-[22rem] sm:h-[28rem] md:h-[36rem] lg:h-[44rem] xl:h-[50rem]
-          "
-                />
-
+            <div className="relative"
+                 style={{ backgroundColor: color }}
+            >
                 {/* NAVBAR */}
-                <header className="absolute z-20 left-[5%] top-4 sm:top-6 md:top-8 w-[90%] h-14 md:h-[4.25rem]">
+                <header className="sticky top-0 z-20 w-[90%] mx-auto h-14 md:h-[4.25rem] pt-10">
                     <div className="relative h-full w-full flex items-center justify-between">
                         <Link
                             to="/portfolio"
@@ -70,33 +62,45 @@ function PortfolioDetail() {
                     </div>
                 </header>
 
+                {/* HERO */}
+                <img
+                    src={heroSrc}
+                    alt={`Projet ${n}`}
+                    className="
+                                w-full object-cover object-[center_35%] select-none
+                                h-[22rem] sm:h-[28rem] md:h-[36rem] lg:h-[44rem] xl:h-[50rem]
+                                mt-14 md:-mt-[4.25rem]
+                              "
+                />
+
+
                 {/* CONTENU */}
-                <section className="bg-[#2C0D0F]">
+                <section style={{ backgroundColor: color }}>
                     <div className="mx-auto w-[90%] pt-6 sm:pt-10 md:pt-12">
                         {/* Titre + date */}
                         <div className="flex flex-col text-center">
                             <h1
                                 className="
-                  text-[#F1F1F1] font-bold uppercase leading-[0.9]
-                  tracking-tight
-                  text-[clamp(2.25rem,10vw,15rem)]
-                "
+                                          text-[#F1F1F1] font-bold uppercase leading-[0.9]
+                                          tracking-tight
+                                          text-[clamp(2.25rem,10vw,15rem)]
+                                        "
                             >
                                 {title}
                             </h1>
                             <span className="text-[#F1F1F1] text-base sm:text-lg md:text-2xl mb-2 text-right pr-4 sm:pr-10 md:pr-20">
-                {date}
-              </span>
+                              {date}
+                            </span>
                         </div>
 
                         {/* 2 colonnes (nav + contenu) */}
                         <div
                             className="
-                grid gap-x-10
-                md:grid-cols-[11.875rem_minmax(0,1fr)]
-                md:gap-x-16 lg:gap-x-24
-                mt-16 sm:mt-24 md:mt-[16.25rem]
-              "
+                                    grid gap-x-10
+                                    md:grid-cols-[11.875rem_minmax(0,1fr)]
+                                    md:gap-x-16 lg:gap-x-24
+                                    mt-16 sm:mt-24 md:mt-[16.25rem]
+                                  "
                         >
                             {/* Colonne gauche - ancres (cachée en < md) */}
                             <ul className="hidden md:flex flex-col w-[11.875rem] space-y-6 lg:space-y-8 text-[#F1F1F1] text-lg lg:text-2xl sticky top-28">

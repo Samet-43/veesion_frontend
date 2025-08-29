@@ -109,7 +109,8 @@ function Service() {
     }
 
     useEffect(() => {
-        const mq = window.matchMedia("(min-width: 1820px)");
+        // breakpoint desktop = xl (1280px)
+        const mq = window.matchMedia("(min-width: 1280px)");
         let attached = false;
 
         const onWheel = (e: WheelEvent) => {
@@ -160,11 +161,6 @@ function Service() {
 
     return (
         <div className="relative w-screen min-h-full">
-            <div
-                aria-hidden
-                className="pointer-events-none fixed inset-0 -z-10 bg-[url('/service/backgroundImage.png')] bg-cover bg-center bg-no-repeat"
-            />
-
             <header className="absolute z-20 left-[5%] top-4 sm:top-6 md:top-8 w-[90%] h-[4.25rem]">
                 <div className="flex items-center justify-between xl:grid xl:grid-cols-[1fr_auto_1fr] xl:items-center">
                     <nav className="hidden sm:flex items-center gap-6 md:gap-10 xl:order-1 font-bold text-sm md:text-xl xl:text-2xl">
@@ -206,70 +202,91 @@ function Service() {
                     </div>
                 </div>
             </header>
+            <div
+                aria-hidden
+                className="pointer-events-none fixed inset-0 -z-10 bg-[url('/service/backgroundImage.png')] bg-cover bg-center bg-no-repeat"
+            />
 
-            {/* Desktop */}
-            <div className="hidden min-[1820px]:block">
-                <div className="absolute top-48 left-32 w-[60.875rem] h-[42.625rem] space-y-12">
-                    {items.map((item, index) => (
-                        <button
-                            key={item.id}
-                            type="button"
-                            onClick={() => animateTo(index)}
-                            className="flex items-start gap-4 text-left cursor-pointer"
+
+            {/* Desktop (xl et +) */}
+            <div className="hidden xl:block">
+                {/* On garde le même “gap” sous le header : top-48 comme avant */}
+                {/* Colonnes fluides, centrées, sans débordement */}
+                <div className="absolute top-48 left-[5%] w-[90%] grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-10 items-start">
+                    {/* Colonne gauche (liste) */}
+                    <div className="w-full">
+                        <div className="space-y-10">
+                            {items.map((item, index) => (
+                                <button
+                                    key={item.id}
+                                    type="button"
+                                    onClick={() => animateTo(index)}
+                                    className="flex items-start gap-4 text-left cursor-pointer"
+                                >
+                                  <span
+                                      className={`inline-flex h-8 w-7 items-center justify-center font-bold leading-none
+                                                text-[clamp(1rem,1.2vw,1.5rem)] ${
+                                          active === index ? "text-[#65130E]" : "text-[#2C0D0F]"
+                                      }`}
+                                  >
+                                    {String(item.id).padStart(2, "0")}
+                                  </span>
+
+                                    <h3
+                                        className={`uppercase tracking-tight max-w-[60ch]
+                                            leading-[1.08] text-[clamp(2rem,3vw,3.25rem)] ${
+                                            active === index ? "font-bold text-[#65130E]" : "font-normal text-[#2C0D0F]"
+                                        }`}
+                                    >
+                                        {item.title.split("\n").map((line, i) => (
+                                            <span key={i} className="block">
+                                              {line}
+                                            </span>
+                                        ))}
+                                    </h3>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Colonne droite (image + texte + bouton) */}
+                    <div className="w-full min-w-0 flex flex-col space-y-6">
+                        <img
+                            key={`img-${items[active].id}`}
+                            src={items[active].img}
+                            alt="service"
+                            className={`w-full h-auto object-contain max-h-[42vh] transition-all duration-300 ease-out ${rightAnimClass}`}
+                        />
+
+                        <div
+                            key={`text-${items[active].id}`}
+                            className={`text-[#2C0D0F] font-medium leading-[1.35] text-[clamp(1rem,1.05vw,1.15rem)] max-w-[68ch] transition-all duration-300 ease-out ${rightAnimClass}`}
                         >
-                            <span
-                                className={`mt-2 inline-flex h-8 w-7 items-center justify-center font-bold text-2xl leading-none ${
-                                    active === index ? "text-[#65130E]" : "text-[#2C0D0F]"
-                                }`}
-                            >
-                              {String(item.id).padStart(2, "0")}
-                            </span>
-                            <h3
-                                className={`uppercase leading-none text-5xl max-w-[57rem] ${
-                                    active === index
-                                        ? "font-bold text-[#65130E]"
-                                        : "font-normal text-[#2C0D0F]"
-                                }`}
-                            >
-                                {item.title.split("\n").map((line, i) => (
-                                    <span key={i} className="block">
-                                      {line}
-                                    </span>
-                                ))}
-                            </h3>
-                        </button>
-                    ))}
-                </div>
+                            {items[active].lines.map((line, i) => (
+                                <span key={i}>
+                                    {line}
+                                    <br />
+                                    {i < items[active].lines.length - 1 && <br />}
+                                </span>
+                            ))}
 
-                <div className="absolute top-48 left-[69.5rem] w-[43rem] space-y-8">
-                    <img
-                        key={`img-${items[active].id}`}
-                        src={items[active].img}
-                        alt="service"
-                        className={`w-full h-auto object-cover transition-all duration-300 ease-out ${rightAnimClass}`}
-                    />
-
-                    <div
-                        key={`text-${items[active].id}`}
-                        className={`text-[#2C0D0F] font-medium text-[1.25rem] leading-[1.35] space-y-0 transition-all duration-300 ease-out ${rightAnimClass}`}
-                    >
-                        {items[active].lines.map((line, i) => (
-                            <span key={i}>
-                                {line}
-                                <br />
-                                {i < items[active].lines.length - 1 && <br />}
-                            </span>
-                        ))}
-
-                        <button className="bg-[#65130E] text-white font-bold text-[1.25rem] px-8 py-3 mt-6 rounded-full hover:opacity-90 transition">
-                            Contactez-nous
-                        </button>
+                            {/* Bouton visible sans scroller hors écran */}
+                            <div className="pt-4">
+                                <button className="bg-[#65130E] text-white font-bold rounded-full
+                                   text-[clamp(1rem,1.05vw,1.25rem)]
+                                   px-[clamp(1rem,1.6vw,2rem)]
+                                   py-[clamp(0.5rem,0.8vw,0.9rem)]
+                                   hover:opacity-90 transition">
+                                    Contactez-nous
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Mobile / tablette avec accordéon */}
-            <div className="block min-[1820px]:hidden">
+            {/* Mobile / tablette (inchangé) */}
+            <div className="block xl:hidden">
                 <div className="absolute top-40 left-1/2 -translate-x-1/2 w-[90%] max-w-[1200px] flex flex-col gap-6 pb-12">
                     {items.map((item) => (
                         <Disclosure key={item.id}>
@@ -277,13 +294,13 @@ function Service() {
                                 <div className="rounded-2xl bg-white/70 backdrop-blur-sm shadow-md overflow-hidden">
                                     <DisclosureButton className="w-full flex justify-between items-center px-5 py-4 text-left">
                                         <div className="flex items-center gap-4">
-                                            <span
-                                                className={`inline-flex h-8 w-8 items-center justify-center font-bold text-xl sm:text-2xl ${
-                                                    open ? "text-[#65130E]" : "text-[#2C0D0F]"
-                                                }`}
-                                            >
-                                              {String(item.id).padStart(2, "0")}
-                                            </span>
+                                          <span
+                                              className={`inline-flex h-8 w-8 items-center justify-center font-bold text-xl sm:text-2xl ${
+                                                  open ? "text-[#65130E]" : "text-[#2C0D0F]"
+                                              }`}
+                                          >
+                                            {String(item.id).padStart(2, "0")}
+                                          </span>
                                             <h3
                                                 className={`uppercase leading-tight text-lg sm:text-xl font-bold ${
                                                     open ? "text-[#65130E]" : "text-[#2C0D0F]"
