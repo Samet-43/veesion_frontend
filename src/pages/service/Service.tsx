@@ -30,8 +30,10 @@ function Service() {
                 title: "SIMPLE",
                 img: "/service/service-test.png",
                 lines: [
-                    "Nous clarifions vos priorités et votre ton de marque pour aller à l’essentiel sans compromis.",
-                    "Des livrables concrets et prêts à l’emploi pour gagner du temps au quotidien."
+                    "Nous prenons en charge le développement de vos prototypes : sourcing et sélection de tissus, et réalisation de prototypes.",
+                    "Nous effectuons des tests des matières, couleurs, texture, résistance, tombé, mouvement et ajustement pour garantir qualité, fonctionnalité et confort.",
+                    "Nous créons des cartes de coloris et nuanciers sur mesure.",
+                    "Ce processus minimise les risques et coûts, assurant que vos produits répondent aux standards de qualité visés et s'alignent parfaitement avec l'identité de votre marque et les attentes des consommateurs."
                 ],
                 leftVariant: "normal",
             },
@@ -40,18 +42,22 @@ function Service() {
                 title: "PRODUCTION",
                 img: "/service/service-test.png",
                 lines: [
-                    "Pré-production, tournage et post-production : nous pilotons chaque étape avec des équipes adaptées.",
-                    "Des contenus optimisés pour vos canaux clés (site, réseaux, campagnes)."
+                    "Nous vous proposons deux options distinctes pour donner vie à vos collections :",
+                    "Production en Atelier : Pour les petites productions, nous pouvons utiliser notre atelier en Belgique. Cela garantit un contrôle qualité constant et le label \"Made in Belgium\".",
+                    "Production en Usine : Pour les volumes plus importants, nous proposons la production en usine. Cela inclut la sélection des meilleures usines pour chaque projet,",
+                    "l'élaboration de fiches techniques détaillées par pièce, et un suivi de production rigoureux (contrôle qualité, logistique, etc.)."
                 ],
                 leftVariant: "normal",
             },
             {
                 id: 4,
-                title: "STRATÉGIE MAKETING",
+                title: "STRATÉGIE MARKETING",
                 img: "/service/service-test.png",
                 lines: [
-                    "Nous définissons un plan d’actions mesurable : objectifs, messages, canaux et calendrier.",
-                    "Un suivi clair pour itérer sans alourdir vos process."
+                    "Une feuille de route viable et impactante. Nous définissons votre proposition de valeur et positionnement. Création d'une histoire de marque captivante et d'une vision claire.",
+                    "Segmentation précise de l'audience pour maximiser les conversions.",
+                    "Tactiques : SEO/SEA, marketing d'influence, gestion des réseaux sociaux (Instagram, TikTok), campagnes publicitaires percutantes (print/digital).",
+                    "Conseils sur les canaux de distribution optimaux (e-commerce, retail) pour une cohérence de marque maximale."
                 ],
                 leftVariant: "normal",
             },
@@ -60,8 +66,10 @@ function Service() {
                 title: "CRÉATION DE CONTENU",
                 img: "/service/service-test.png",
                 lines: [
-                    "Des formats cohérents avec votre identité : visuels, éditorial, vidéo, print.",
-                    "Chaque contenu sert vos objectifs de marque et de performance."
+                    "Le contenu est le cœur de votre visibilité. Nous créons tous les contenus de marque : photos de campagne, photos produit, et vidéos promotionnelles (à définir selon le budget).",
+                    "Nous produisons du contenu dynamique pour les réseaux sociaux (Reels, TikTok, BTS, etc.).",
+                    "Notre équipe inclut un Community Manager pour engager votre audience.",
+                    "Un contenu percutant pour développer votre visibilité et transmettre la valeur de vos produits."
                 ],
                 leftVariant: "normal",
             },
@@ -70,8 +78,8 @@ function Service() {
                 title: "SUIVI DE CROISSANCE",
                 img: "/service/service-test.png",
                 lines: [
-                    "Indicateurs simples, points réguliers et apprentissages actionnables.",
-                    "Nous ajustons en continu pour maximiser l’impact."
+                    "Nous proposons un suivi post-création pour assurer une croissance continue.",
+                    "Ce service comprend l'analyse de données pour comprendre les performances, l'établissement d'un plan de croissance stratégique, et l'optimisation continue de vos actions pour maximiser votre impact et votre rentabilité."
                 ],
                 leftVariant: "normal",
             },
@@ -210,12 +218,13 @@ function Service() {
 
             {/* Desktop (xl et +) */}
             <div className="hidden xl:block">
-                {/* On garde le même “gap” sous le header : top-48 comme avant */}
-                {/* Colonnes fluides, centrées, sans débordement */}
-                <div className="absolute top-48 left-[5%] w-[90%] grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-10 items-start">
+                <div className="absolute top-48 2k:top-60 3xl:top-64 left-[5%] w-[90%]
+                    grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)]
+                    gap-10 items-start">
+
                     {/* Colonne gauche (liste) */}
                     <div className="w-full">
-                        <div className="space-y-10">
+                        <div className="space-y-10 fullhd:space-y-10 2k:space-y-24 4k:space-y-28">
                             {items.map((item, index) => (
                                 <button
                                     key={item.id}
@@ -223,24 +232,24 @@ function Service() {
                                     onClick={() => animateTo(index)}
                                     className="flex items-start gap-4 text-left cursor-pointer"
                                 >
-                                  <span
-                                      className={`inline-flex h-8 w-7 items-center justify-center font-bold leading-none
-                                                text-[clamp(1rem,1.2vw,1.5rem)] ${
-                                          active === index ? "text-[#65130E]" : "text-[#2C0D0F]"
-                                      }`}
-                                  >
-                                    {String(item.id).padStart(2, "0")}
-                                  </span>
+                                    <span
+                                        className={`inline-flex h-8 w-7 items-center justify-center font-bold leading-none
+                                            text-[clamp(1rem,1.2vw,1.5rem)] ${
+                                            active === index ? "text-[#65130E]" : "text-[#2C0D0F] blur-[1px]"
+                                        }`}
+                                    >
+                                        {String(item.id).padStart(2, "0")}
+                                    </span>
 
                                     <h3
                                         className={`uppercase tracking-tight max-w-[60ch]
-                                            leading-[1.08] text-[clamp(2rem,3vw,3.25rem)] ${
-                                            active === index ? "font-bold text-[#65130E]" : "font-normal text-[#2C0D0F]"
+                                                    leading-[1.08] text-[clamp(2rem,3vw,3.25rem)] ${
+                                            active === index ? "font-bold text-[#65130E]" : "font-normal text-[#2C0D0F] blur-[1px]"
                                         }`}
                                     >
                                         {item.title.split("\n").map((line, i) => (
                                             <span key={i} className="block">
-                                              {line}
+                                                {line}
                                             </span>
                                         ))}
                                     </h3>
@@ -249,7 +258,7 @@ function Service() {
                         </div>
                     </div>
 
-                    {/* Colonne droite (image + texte + bouton) */}
+                    {/* Colonne droite */}
                     <div className="w-full min-w-0 flex flex-col space-y-6">
                         <img
                             key={`img-${items[active].id}`}
@@ -260,23 +269,25 @@ function Service() {
 
                         <div
                             key={`text-${items[active].id}`}
-                            className={`text-[#2C0D0F] font-medium leading-[1.35] text-[clamp(1rem,1.05vw,1.15rem)] max-w-[68ch] transition-all duration-300 ease-out ${rightAnimClass}`}
+                            className={`text-[#2C0D0F] font-medium leading-[1.35] 
+                            text-[clamp(1rem,1.05vw,1.15rem)] max-w-[68ch] 
+                            transition-all duration-300 ease-out ${rightAnimClass}`}
                         >
                             {items[active].lines.map((line, i) => (
                                 <span key={i}>
                                     {line}
-                                    <br />
+                                    <br /> <br className="hidden 2k:inline"/>
                                     {i < items[active].lines.length - 1 && <br />}
                                 </span>
                             ))}
 
-                            {/* Bouton visible sans scroller hors écran */}
+                            {/* Bouton */}
                             <div className="pt-4">
                                 <button className="bg-[#65130E] text-white font-bold rounded-full
-                                   text-[clamp(1rem,1.05vw,1.25rem)]
-                                   px-[clamp(1rem,1.6vw,2rem)]
-                                   py-[clamp(0.5rem,0.8vw,0.9rem)]
-                                   hover:opacity-90 transition">
+                                                   text-[clamp(1rem,1.05vw,1.25rem)]
+                                                   px-[clamp(1rem,1.6vw,2rem)]
+                                                   py-[clamp(0.5rem,0.8vw,0.9rem)]
+                                                   hover:opacity-90 transition">
                                     Contactez-nous
                                 </button>
                             </div>
