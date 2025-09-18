@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 type Item = { id: number; src: string; title: string; date: string };
 
@@ -42,13 +43,13 @@ function Portfolio() {
         slideBy(delta);
     }
 
+    // molette (desktop large uniquement)
     useEffect(() => {
         const mq = window.matchMedia("(min-width: 1820px)");
         let attached = false;
 
         const onWheel = (e: WheelEvent) => {
             if (Math.abs(e.deltaY) < 10 || anim) return;
-            e.preventDefault();
             slideBy(e.deltaY > 0 ? 1 : -1);
         };
 
@@ -107,9 +108,44 @@ function Portfolio() {
 
     const baseTranslate = -(stepPx * shift);
 
+    // --- DRAG (souris + mobile) ---
+    const [dragging, setDragging] = useState(false);
+    const dragStartRef = useRef<number | null>(null);
+
+    const handleDragStart = (clientX: number) => {
+        dragStartRef.current = clientX;
+        setDragging(true);
+    };
+
+    const handleDragMove = (clientX: number) => {
+        if (!dragging || dragStartRef.current === null) return;
+        const delta = clientX - dragStartRef.current;
+
+        if (Math.abs(delta) >= stepPx) {
+            slideBy(delta < 0 ? 1 : -1);
+            dragStartRef.current = clientX; // reset pour continuer
+        }
+    };
+
+    const handleDragEnd = () => {
+        setDragging(false);
+        dragStartRef.current = null;
+    };
+
     return (
         <>
-            <div className="relative h-screen w-screen">
+            <div
+                className="relative h-screen w-screen"
+                // souris
+                onMouseDown={(e) => handleDragStart(e.clientX)}
+                onMouseMove={(e) => handleDragMove(e.clientX)}
+                onMouseUp={handleDragEnd}
+                onMouseLeave={handleDragEnd}
+                // tactile
+                onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
+                onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
+                onTouchEnd={handleDragEnd}
+            >
                 <img
                     src="/service/backgroundImage.png"
                     alt=""
@@ -117,9 +153,7 @@ function Portfolio() {
                 />
 
                 <header className="absolute z-20 left-[5%] top-4 sm:top-6 md:top-8 w-[90%] h-[4.25rem]">
-                    {/* top bar */}
                     <div className="flex items-center justify-between xl:grid xl:grid-cols-[1fr_auto_1fr] xl:items-center">
-                        {/* liens — cachés UNIQUEMENT en mobile, visibles dès tablette */}
                         <nav className="hidden sm:flex items-center gap-6 md:gap-10 xl:order-1 font-bold
                                         text-sm md:text-xl xl:text-2xl">
                             <Link to="/services" className="text-[#2C0D0F] hover:opacity-80">Service</Link>
@@ -127,14 +161,12 @@ function Portfolio() {
                             <Link to="/merch" className="text-[#2C0D0F] hover:opacity-80">Merch</Link>
                         </nav>
 
-                        {/* logo — gauche en mobile/tablette, centré en ≥ xl */}
                         <Link to="/" aria-label="Accueil"
                               className="select-none order-1 xl:order-2 xl:justify-self-center">
                             <img src="/home/logo-texte-rouge.png" alt="veeesion"
                                  className="block h-6 xl:h-10 object-contain" />
                         </Link>
 
-                        {/* burger — toujours à droite */}
                         <div className="order-2 xl:order-3 xl:justify-self-end">
                             <Link to="/menu" aria-label="Menu"
                                   className="flex items-center justify-center mt-1 h-[4.25rem] w-[4.25rem] hover:opacity-80">
@@ -143,8 +175,6 @@ function Portfolio() {
                             </Link>
                         </div>
                     </div>
-
-                    {/* liens mobile/tablette sous le logo — SUPPRIMÉS (on ne les affiche plus) */}
                 </header>
 
                 <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
@@ -173,10 +203,13 @@ function Portfolio() {
                                 >
                                     {isCenter ? (
                                         <Link to={`/portfolio/${id}`} className="block">
-                                            <img
+                                            <motion.img
                                                 src={src}
                                                 alt={title}
-                                                className="w-full h-[14rem] xs:h-[15rem] sm:h-[17rem] md:h-[20rem] lg:h-[22.5rem] object-cover transition-all duration-300 ease-out blur-0 opacity-100 -translate-y-px"
+                                                initial={{ opacity: 0, scale: 0.95 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                transition={{ duration: 0.6, ease: "easeOut" }}
+                                                className="w-full h-[14rem] xs:h-[15rem] sm:h-[17rem] md:h-[20rem] lg:h-[22.5rem] object-cover"
                                             />
                                         </Link>
                                     ) : (
