@@ -1,13 +1,52 @@
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Home() {
+
+    const [pos, setPos] = useState({ x: 0, y: 0 });
+
+    const handleMouseMove = (e) => {
+        setPos({ x: e.clientX, y: e.clientY });
+    };
+
     return (
         <>
-            <div className="relative h-screen w-screen overflow-hidden">
+            <div className="relative h-screen w-screen overflow-hidden"
+                 onMouseMove={handleMouseMove}
+            >
+
+                {/* Image nette */}
                 <img
-                    src="/home/background.png"
+                    src="/home/background.jpg"
                     alt=""
-                    className="h-full w-full object-cover"
+                    className="absolute inset-0 h-auto w-full"
+                />
+
+                {/* Image floutée avec un "trou" qui suit la souris */}
+                <img
+                    src="/home/background.jpg"
+                    alt=""
+                    className="absolute inset-0 h-auto w-full blur-[8px] pointer-events-none"
+                    style={{
+                        WebkitMaskImage: `radial-gradient(circle 80px at ${pos.x}px ${pos.y}px, transparent 0%, black 100%)`,
+                        WebkitMaskRepeat: "no-repeat",
+                        WebkitMaskSize: "100% 100%",
+                        maskImage: `radial-gradient(circle 80px at ${pos.x}px ${pos.y}px, transparent 0%, black 100%)`,
+                        maskRepeat: "no-repeat",
+                        maskSize: "100% 100%",
+                    }}
+                />
+
+                {/* Cercle avec bordure */}
+                <div
+                    className="pointer-events-none absolute rounded-full"
+                    style={{
+                        width: "120px",
+                        height: "120px",
+                        left: `${pos.x - 60}px`,
+                        top: `${pos.y - 60}px`,
+                        boxShadow: "inset 0 0 10px 10px rgba(255,255,255,0.6)",
+                    }}
                 />
 
                 <div className="absolute bottom-4 right-4 sm:bottom-5 sm:right-5 md:bottom-6 md:right-6 w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28">
