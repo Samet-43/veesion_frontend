@@ -128,15 +128,13 @@ function MerchDetail() {
     // ---------- Interactions croix ----------
     const [activeDetail, setActiveDetail] = useState<null | "c1" | "c2">(null);
     const detailRef = useRef<HTMLDivElement | null>(null);
-
-    const onCrossClick = useCallback(
+    useCallback(
         (which: "c1" | "c2") => {
             if (n !== 1 || centerThumbId !== 1) return;
             setActiveDetail((prev) => (prev === which ? null : which));
         },
         [n, centerThumbId]
     );
-
     useEffect(() => {
         const onDown = (e: MouseEvent) => {
             if (!detailRef.current) return;
@@ -210,13 +208,41 @@ function MerchDetail() {
                 </header>
 
                 {/* ===== MAIN ===== */}
-                <main className="absolute left-[5%] top-[8rem] w-[90%]">
+                <main className="absolute left-[5%] top-[4rem] md:top-[8rem] w-[90%]">
                     <div
                         className="
-                                      grid grid-cols-1 min-[900px]:grid-cols-[12.5rem_1fr]
-                                      gap-16 relative
-                                    "
+                                  grid grid-cols-1 min-[900px]:grid-cols-[12.5rem_1fr]
+                                  gap-4 relative
+                                "
                     >
+                        {/* Bloc image principal + vignettes — seulement mobile */}
+                        <div className="flex flex-col items-center gap-4 mb-6 max-[899px]:block min-[900px]:hidden max-h-[80vh]">
+                            <img
+                                src={`/merchDetail/${n}/productCard-${centerThumbId}.png`}
+                                alt="Produit principal"
+                                className="w-full max-w-[14rem] h-auto max-h-[55vh] object-contain rounded-lg mx-auto"
+                            />
+
+                            <div className="flex flex-row justify-center gap-4 mt-4">
+                                {ordered.map((num, idx) => (
+                                    <div
+                                        key={num}
+                                        className={`w-20 rounded-xl p-2 ${
+                                            idx === centerIndex ? "bg-white/60" : "bg-white/30"
+                                        }`}
+                                        onClick={() => slideTo(idx)}
+                                    >
+                                        <img
+                                            src={`/merchDetail/${n}/productCard-${num}.png`}
+                                            alt={`Produit détail ${num}`}
+                                            className="w-full h-auto object-contain rounded-lg cursor-pointer"
+                                            onError={() => handleImageError(num)}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
                         {/* Grande image produit (desktop seulement) */}
                         <img
                             src={
@@ -228,44 +254,11 @@ function MerchDetail() {
                             className="
                                         pointer-events-none select-none absolute right-[-5%] top-[-10rem] w-[60rem]
                                         rotate-[21deg] z-0 opacity-100
-                                        max-[1819px]:hidden
+                                        max-[1300px]:hidden
                                       "
                         />
 
-                        {/* CROIX (desktop seulement) */}
-                        {n === 1 && centerThumbId === 1 && (
-                            <>
-                                <button
-                                    type="button"
-                                    aria-label="Détails produit"
-                                    onClick={() => onCrossClick("c1")}
-                                    className={`
-                                                absolute z-10 left-[75%] top-[17rem] select-none
-                                                transition-transform duration-200 ease-out
-                                                ${activeDetail === "c1" ? "rotate-45" : "rotate-0"}
-                                                max-[1819px]:hidden
-                                              `}
-                                >
-                                    <img src="/merchDetail/product-detail.png" alt="" className="block" />
-                                </button>
-
-                                <button
-                                    type="button"
-                                    aria-label="Détails produit"
-                                    onClick={() => onCrossClick("c2")}
-                                    className={`
-                                                absolute z-10 left-[90%] top-[25rem] select-none
-                                                transition-transform duration-200 ease-out
-                                                ${activeDetail === "c2" ? "rotate-45" : "rotate-0"}
-                                                max-[1819px]:hidden
-                                              `}
-                                >
-                                    <img src="/merchDetail/product-detail.png" alt="" className="block" />
-                                </button>
-                            </>
-                        )}
-
-                        {/* Colonne images — visible en ≥900px, cachée en <900px (scroll roue seulement desktop via JS) */}
+                        {/* Colonne images — desktop seulement */}
                         <div
                             ref={colWheelRef}
                             className="
@@ -286,7 +279,9 @@ function MerchDetail() {
                             {ordered.map((num, idx) => (
                                 <div
                                     key={num}
-                                    className={`w-full rounded-xl p-2 ${idx === centerIndex ? "bg-white/60" : "bg-white/30"}`}
+                                    className={`w-full rounded-xl p-2 ${
+                                        idx === centerIndex ? "bg-white/60" : "bg-white/30"
+                                    }`}
                                     onClick={() => slideTo(idx)}
                                 >
                                     <img
@@ -311,7 +306,7 @@ function MerchDetail() {
                             className="
                                         max-w-[39rem] pt-2 mx-35 my-20
                                         max-[1819px]:my-10
-                                        max-[899px]:my-6 max-[899px]:w-[90%] max-[899px]:max-w-none max-[899px]:mx-auto
+                                        max-[899px]:my-6 max-[899px]:w-[90%] max-[899px]:max-w-none max-[899px]:mx-auto z-20
                                       "
                         >
                             {/* TITRE : tailles adaptées */}
@@ -331,7 +326,9 @@ function MerchDetail() {
                             </p>
 
                             <div className="mt-16 max-[1819px]:mt-10 max-[899px]:mt-6 flex items-center gap-4">
-                                <span className="text-[#2C0D0F] text-[20px] max-[1819px]:text-[18px] max-[899px]:text-[16px]">Taille :</span>
+                                <span className="text-[#2C0D0F] text-[20px] max-[1819px]:text-[18px] max-[899px]:text-[16px]">
+                                  Taille :
+                                </span>
 
                                 <select
                                     className="px-4 py-2 rounded-full border border-[#2C0D0F]/30 text-[20px] bg-white/80 focus:outline-none cursor-pointer max-[1819px]:text-[18px] max-[899px]:text-[16px]"
@@ -342,64 +339,10 @@ function MerchDetail() {
                                     <option value="Large">Large</option>
                                 </select>
                             </div>
-
-                            <div className="mt-16 max-[1819px]:mt-10 max-[899px]:mt-6 flex items-center gap-4 hidden">
-                                <button
-                                    type="button"
-                                    className="px-6 py-3 rounded-full bg-[#F1F1F1] text-[#2C0D0F] text-[20px] max-[1819px]:text-[18px] max-[899px]:text-[16px]"
-                                >
-                                    Ajouter au panier
-                                </button>
-                                <button
-                                    type="button"
-                                    className="px-6 py-3 rounded-full text-white text-[20px] max-[1819px]:text-[18px] max-[899px]:text-[16px]"
-                                    style={{ backgroundColor: "#65130E" }}
-                                >
-                                    Acheter le produit
-                                </button>
-                            </div>
                         </div>
-
-                        {/* ---------- Dropdown d'information (desktop seulement) ---------- */}
-                        {activeDetail && centerThumbId === 1 && (
-                            <div
-                                ref={detailRef}
-                                className="absolute z-30 max-[1819px]:hidden"
-                                style={{
-                                    left: activeDetail === "c1" ? "75%" : "90%",
-                                    top: activeDetail === "c1" ? "calc(17rem + 3.75rem)" : "calc(25rem + 3.75rem)",
-                                    transform: "translateX(-50%)",
-                                }}
-                            >
-                                <div className="relative">
-                                    <div className="w-[20rem] rounded-[0.75rem] bg-white shadow-[0_10px_24px_rgba(0,0,0,0.18)] border border-black/5">
-                                        <div className="px-4 py-3 text-sm text-[#2C0D0F]/90 space-y-2">
-                                            {activeDetail === "c1" ? (
-                                                <p className="leading-snug">
-                                                    Corps en alliage anodisé, zone large pour demi-cabestan,
-                                                    résistance accrue et maniabilité fluide.
-                                                </p>
-                                            ) : (
-                                                <p className="leading-snug">
-                                                    Mousqueton avec bague automatique, peu s'ouvrir d'une main se
-                                                    referme tout seul.
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* petite flèche */}
-                                    <div
-                                        className="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0
-                                                   border-l-[10px] border-l-transparent
-                                                   border-r-[10px] border-r-transparent
-                                                   border-b-[10px] border-b-white"
-                                    />
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </main>
+
             </div>
         </>
     );
